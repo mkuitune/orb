@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orb", "orb.vcxproj", "{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orb-repl", "orb-repl.vcxproj", "{51CA28B5-BD04-433D-8FBD-8003D62D3843}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4} = {F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orb-test", "orb-test.vcxproj", "{C510546D-670A-4AFD-BEA4-89A658725039}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4} = {F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}.Debug|Win32.Build.0 = Debug|Win32
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}.Release|Win32.ActiveCfg = Release|Win32
+		{F67BBA7F-F6BB-4751-9BAB-C19C743C74E4}.Release|Win32.Build.0 = Release|Win32
+		{51CA28B5-BD04-433D-8FBD-8003D62D3843}.Debug|Win32.ActiveCfg = Debug|Win32
+		{51CA28B5-BD04-433D-8FBD-8003D62D3843}.Debug|Win32.Build.0 = Debug|Win32
+		{51CA28B5-BD04-433D-8FBD-8003D62D3843}.Release|Win32.ActiveCfg = Release|Win32
+		{51CA28B5-BD04-433D-8FBD-8003D62D3843}.Release|Win32.Build.0 = Release|Win32
+		{C510546D-670A-4AFD-BEA4-89A658725039}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C510546D-670A-4AFD-BEA4-89A658725039}.Debug|Win32.Build.0 = Debug|Win32
+		{C510546D-670A-4AFD-BEA4-89A658725039}.Release|Win32.ActiveCfg = Release|Win32
+		{C510546D-670A-4AFD-BEA4-89A658725039}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\allocators.cpp" />
+    <ClCompile Include="..\iotools.cpp" />
+    <ClCompile Include="..\masp.cpp" />
+    <ClCompile Include="..\masp_classwrap.cpp" />
+    <ClCompile Include="..\masp_extensions.cpp" />
+    <ClCompile Include="..\persistent_containers.cpp" />
+    <ClCompile Include="..\shims_and_types.cpp" />
+    <ClCompile Include="..\math_tools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\allocators.h" />
+    <ClInclude Include="..\annotated_result.h" />
+    <ClInclude Include="..\glh_regex.h" />
+    <ClInclude Include="..\iotools.h" />
+    <ClInclude Include="..\masp.h" />
+    <ClInclude Include="..\masp_classwrap.h" />
+    <ClInclude Include="..\masp_extensions.h" />
+    <ClInclude Include="..\persistent_containers.h" />
+    <ClInclude Include="..\shims_and_types.h" />
+    <ClInclude Include="..\math_tools.h" />
+    <ClInclude Include="..\orb_lib.h" />
+  </ItemGroup>
+</Project>
