@@ -1,14 +1,14 @@
-/** \file masp_extensions.cpp
+/** \file orb_extensions.cpp
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
 */
 
-#include "masp_extensions.h"
-#include "masp_classwrap.h"
+#include "orb_extensions.h"
+#include "orb_classwrap.h"
 #include "iotools.h"
 
 namespace orb{
 
-orb::Value make_InputFile(Masp& m, Vector& args, Map& env){
+orb::Value make_InputFile(Orb& m, Vector& args, Map& env){
     typedef WrappedObject<InputFile> WrappedInput;
 
     VecIterator arg_start = args.begin();
@@ -34,7 +34,7 @@ void outputfile_functions(orb::FunMap& fmap)
     fmap.add("write",   wrap_member(&OutputFile::write));
 }
 
-orb::Value make_OutputFile(orb::Masp& m, orb::Vector& args, orb::Map& env){
+orb::Value make_OutputFile(orb::Orb& m, orb::Vector& args, orb::Map& env){
     typedef WrappedObject<OutputFile> WrappedOutput;
 
     orb::VecIterator arg_start = args.begin();
@@ -51,7 +51,7 @@ orb::Value make_OutputFile(orb::Masp& m, orb::Vector& args, orb::Map& env){
     return object_data_to_list(fmap, obj, m);
 }
 
-orb::Value make_OutputFileApp(orb::Masp& m, orb::Vector& args, orb::Map& env){
+orb::Value make_OutputFileApp(orb::Orb& m, orb::Vector& args, orb::Map& env){
     typedef WrappedObject<OutputFile> WrappedOutput;
 
     orb::VecIterator arg_start = args.begin();
@@ -69,7 +69,7 @@ orb::Value make_OutputFileApp(orb::Masp& m, orb::Vector& args, orb::Map& env){
     return object_data_to_list(fmap, obj, m);
 }
 
-void load_masp_unsafe_extensions(orb::Masp& m)
+void load_orb_unsafe_extensions(orb::Orb& m)
 {
     orb::add_fun(m , "InputFile", make_InputFile);
     orb::add_fun(m , "OutputFile", make_OutputFile);

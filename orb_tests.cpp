@@ -3,8 +3,8 @@
 
 //#include "glhack.h"
 #include "persistent_containers.h"
-#include "masp.h"
-#include "masp_classwrap.h"
+#include "orb.h"
+#include "orb_classwrap.h"
 #include <string>
 #include <functional>
 #include <cassert>
@@ -39,11 +39,11 @@ bool expect_value(const orb::ValuePtr p, std::function<T(const orb::Value& v)> g
 }
 
 template<class T>
-bool compare_parsing(orb::Masp& m, const char* str, std::function<T(const orb::Value& v)> get, const T& comp, orb::Type expect_type)
+bool compare_parsing(orb::Orb& m, const char* str, std::function<T(const orb::Value& v)> get, const T& comp, orb::Type expect_type)
 {
     bool result = false;
 
-    orb::masp_result r = orb::read_eval(m, str);
+    orb::orb_result r = orb::read_eval(m, str);
 
     if(r.valid()){
 
@@ -79,7 +79,7 @@ public:
 typedef orb::WrappedObject<FakeInputFile> WrappedInput;
 
 
-orb::Value make_FakeInputFile(orb::Masp& m, orb::Vector& args, orb::Map& env){
+orb::Value make_FakeInputFile(orb::Orb& m, orb::Vector& args, orb::Map& env){
     orb::VecIterator arg_start = args.begin();
     orb::VecIterator arg_end = args.end();
 
@@ -106,11 +106,11 @@ orb::Value make_FakeInputFile(orb::Masp& m, orb::Vector& args, orb::Map& env){
     return listv;
 }
 
-UTEST(masp, object_interface_fake_input)
+UTEST(orb, object_interface_fake_input)
 {
     using namespace orb;
 
-    orb::Masp m;
+    orb::Orb m;
 
     /*
          builder: return value, tahtn
@@ -124,7 +124,7 @@ UTEST(masp, object_interface_fake_input)
                       "(def contstring (first contlist))"
                       ;
 
-    orb::masp_result evalresult = orb::read_eval(m, src);
+    orb::orb_result evalresult = orb::read_eval(m, src);
 
     ASSERT_TRUE(evalresult.valid(), "Unsuccesfull parsing");
 
@@ -145,11 +145,11 @@ UTEST(masp, object_interface_fake_input)
 
 
 
-UTEST(masp, get_value)
+UTEST(orb, get_value)
 {
     using namespace orb;
 
-    orb::Masp m;
+    orb::Orb m;
 
     const char* def1 = "";
 
@@ -158,26 +158,26 @@ UTEST(masp, get_value)
     ASSERT_TRUE(compare_parsing<std::string>(m, "(def fooname \"foo\") fooname", orb::value_string, std::string("foo"), orb::STRING), "value mismatch");
 }
 
-UTEST(masp, simple_evaluations)
+UTEST(orb, simple_evaluations)
 {
     using namespace orb;
 
-    orb::Masp m;
+    orb::Orb m;
     ASSERT_TRUE(compare_parsing<orb::Number>(m, "1", orb::value_number, orb::Number::make(1), orb::NUMBER), "value mismatch");
     ASSERT_TRUE(compare_parsing<std::string>(m, "\"foo\"", orb::value_string, std::string("foo"), orb::STRING), "value mismatch");
     ASSERT_TRUE(compare_parsing<std::string>(m, "(def fooname \"foo\") fooname", orb::value_string, std::string("foo"), orb::STRING), "value mismatch");
 
 }
 
-UTEST(masp, simple_parsing)
+UTEST(orb, simple_parsing)
 {
     using namespace orb;
 
-    orb::Masp m;
+    orb::Orb m;
 
     auto parsestr = [&m](const char* str)
     {
-        orb::masp_result a = orb::string_to_value(m, str);
+        orb::orb_result a = orb::string_to_value(m, str);
 
         if(a.valid())
         {

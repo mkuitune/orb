@@ -1,9 +1,9 @@
-﻿/** \file masp_classwrap.h. Wrapper for classes.
+﻿/** \file orb_classwrap.h. Wrapper for classes.
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
 */
 #pragma once
 
-#include "masp.h"
+#include "orb.h"
 #include <typeinfo>
 namespace orb{
 
@@ -16,7 +16,7 @@ namespace orb{
 */
 
 // object_factory = return list (value:IObject, value:map{name, objfun, name, objfun})
-// objfun : void foo(Masp& m, VecIterator arg_start, VecIterator arg_end, Map& env)
+// objfun : void foo(Orb& m, VecIterator arg_start, VecIterator arg_end, Map& env)
 // {obj = value_object(&*arg_start); if(obj){inst = dynamic_cast<inst_type>(obj)}}
 // TOOD: add shorthand (. fun obj params) :=  (((fnext obj) fun) (first obj) params) = 
 //                           
@@ -63,16 +63,16 @@ T* get_wrapped(IObject* iobj){
 }
 
 template<class T>
-orb::Value to_value(orb::Masp& m, const T& val);
+orb::Value to_value(orb::Orb& m, const T& val);
 
 template<>
-inline orb::Value to_value<bool>(orb::Masp& m, const bool& val){return orb::make_value_boolean(val);}
+inline orb::Value to_value<bool>(orb::Orb& m, const bool& val){return orb::make_value_boolean(val);}
 
 template<>
-inline orb::Value to_value<std::string>(orb::Masp& m, const std::string& str){return orb::make_value_string(str);}
+inline orb::Value to_value<std::string>(orb::Orb& m, const std::string& str){return orb::make_value_string(str);}
 
 template<class P0, class P1>
-orb::Value to_value(orb::Masp& m, const std::tuple<P0, P1>& input)
+orb::Value to_value(orb::Orb& m, const std::tuple<P0, P1>& input)
 {
     using namespace orb;
     Value vlist = make_value_list(m);
@@ -132,7 +132,7 @@ TO_TYPE(IObject*){
 
 class FunBase{public:
     virtual ~FunBase(){}
-    virtual Value operator()(Masp& m, Vector& args, Map& env) = 0;
+    virtual Value operator()(Orb& m, Vector& args, Map& env) = 0;
 };
 
 typedef std::shared_ptr<FunBase> FunBasePtr;
@@ -190,7 +190,7 @@ class FunWrap0_0 : public FunBase{public:
 
     FunWrap0_0(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         fun_();
@@ -205,7 +205,7 @@ class FunWrap0_1 : public FunBase{public:
 
     FunWrap0_1(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         P0 p0;
@@ -222,7 +222,7 @@ class FunWrap1_0 : public FunBase{public:
 
     FunWrap1_0(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         return to_value(m, fun_());
@@ -236,7 +236,7 @@ class FunWrap1_1 : public FunBase{public:
 
     FunWrap1_1(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         P0 p0;
@@ -252,7 +252,7 @@ class FunWrap1_2 : public FunBase{public:
 
     FunWrap1_2(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         P0 p0;
@@ -285,7 +285,7 @@ class MemFunWrap0_0 : public FunBase{public:
 
     MemFunWrap0_0(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         IObject* obj;
@@ -303,7 +303,7 @@ class MemFunWrap0_1 : public FunBase{public:
 
     MemFunWrap0_1(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         IObject* obj;
@@ -325,7 +325,7 @@ class MemFunWrap1_0 : public FunBase{public:
 
     MemFunWrap1_0(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         IObject* obj;
@@ -343,7 +343,7 @@ class MemFunWrap1_1 : public FunBase{public:
 
     MemFunWrap1_1(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         IObject* obj;
@@ -363,7 +363,7 @@ class MemFunWrap1_2 : public FunBase{public:
 
     MemFunWrap1_2(funt fun):fun_(fun){}
 
-    Value operator()(Masp& m, Vector& args, Map& env) override {
+    Value operator()(Orb& m, Vector& args, Map& env) override {
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         IObject* obj;
@@ -403,7 +403,7 @@ PrimitiveFunction wrap_member(R (T::*mmbr)(P0, P1)){
 
 class FunMap{public:
     Value mapv_;
-    FunMap(Masp& m){
+    FunMap(Orb& m){
         mapv_ = make_value_map(m);
     }
     void add(const char* name, PrimitiveFunction fun){
@@ -413,7 +413,7 @@ class FunMap{public:
     Value& map(){return mapv_;}
 };
 
-Value object_data_to_list(FunMap&fmap, Value& obj, Masp& m);
+Value object_data_to_list(FunMap&fmap, Value& obj, Orb& m);
 
-}//Namespace masp
+}//Namespace orb
 

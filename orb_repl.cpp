@@ -1,6 +1,6 @@
 #include "iotools.h"
-#include "masp.h"
-#include "masp_extensions.h"
+#include "orb.h"
+#include "orb_extensions.h"
 #include<iostream>
 #include<cstring>
 #include <sstream>
@@ -8,7 +8,7 @@
 
 void print_help()
 {
-    std::cout << "Welcome to Masp parser version " << MASP_VERSION << "\n" <<
+    std::cout << "Welcome to Orb parser version " << ORB_VERSION << "\n" <<
                  "'help' Show this help.\n" <<
                  "'quit' Exit interpreter.\n" <<
                  "'memory' Display used memory (live/reserved).\n";
@@ -16,15 +16,15 @@ void print_help()
 
 //TODO: gc
 
-void printing_response(orb::Masp& M, orb::Value* v)
+void printing_response(orb::Orb& M, orb::Value* v)
 {
     std::string outline = orb::value_to_typed_string(v);
     std::cout << outline << std::endl;
 }
 
-void eval_response(orb::Masp& M, orb::Value* v)
+void eval_response(orb::Orb& M, orb::Value* v)
 {
-    orb::masp_result result = orb::eval(M,v);
+    orb::orb_result result = orb::eval(M,v);
     if(result.valid())
     {
         printing_response(M, (*result).get());
@@ -52,14 +52,14 @@ void print_memory(std::ostream& os, const char* prefix, size_t live, size_t rese
     os << "(live/reserved): " << memory_string(live) << " / " << memory_string(reserved) << std::endl;
 }
 
-void repl(orb::Masp& M)
+void repl(orb::Orb& M)
 {
     using namespace orb;
     using std::cout;
     using std::cin;
     using std::endl;
 
-    std::cout << "Masp repl\n" << std::endl;
+    std::cout << "Orb repl\n" << std::endl;
 
     bool live = true;
     const int line_size = 1024;
@@ -119,7 +119,7 @@ void repl(orb::Masp& M)
         }
         else
         {
-            masp_result result = string_to_value(M, line);
+            orb_result result = string_to_value(M, line);
             if(result.valid())
             {
                 if(mode == PRINT)
@@ -139,7 +139,7 @@ void repl(orb::Masp& M)
     }
 }
 
-void eval_file(const char* path, orb::Masp& M)
+void eval_file(const char* path, orb::Orb& M)
 {
 
     using std::cout;
@@ -155,7 +155,7 @@ void eval_file(const char* path, orb::Masp& M)
     {
         using namespace orb;
 
-        masp_result result = string_to_value(M, str.c_str());
+        orb_result result = string_to_value(M, str.c_str());
 
         if(result.valid()) {
             eval_response(M, (*result).get());
@@ -172,8 +172,8 @@ void eval_file(const char* path, orb::Masp& M)
 int main(int argc, char* argv[])
 {
 
-    orb::Masp M;
-    orb::load_masp_unsafe_extensions(M);
+    orb::Orb M;
+    orb::load_orb_unsafe_extensions(M);
     M.set_args(argc, argv);
 
     if(argc == 1)

@@ -11,6 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\masp_repl.cpp" />
+    <ClCompile Include="..\orb_repl.cpp" />
   </ItemGroup>
 </Project>

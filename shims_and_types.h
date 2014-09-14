@@ -1202,7 +1202,7 @@ std::ostream& operator<<(std::ostream& os, const std::map<T, V>& map)
 
 //////////////////////// Hashing /////////////////////////////
 
-uint32_t get_hash32(cstring& string);
+ORB_LIB uint32_t get_hash32(cstring& string);
 
 template<class T>
 uint32_t get_hash32(const T& elem)

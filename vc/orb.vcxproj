@@ -67,21 +67,24 @@
   <ItemGroup>
     <ClCompile Include="..\allocators.cpp" />
     <ClCompile Include="..\iotools.cpp" />
-    <ClCompile Include="..\masp.cpp" />
-    <ClCompile Include="..\masp_classwrap.cpp" />
-    <ClCompile Include="..\masp_extensions.cpp" />
+    <ClCompile Include="..\orb.cpp" />
+    <ClCompile Include="..\orb_classwrap.cpp" />
+    <ClCompile Include="..\orb_extensions.cpp" />
     <ClCompile Include="..\math_tools.cpp" />
     <ClCompile Include="..\persistent_containers.cpp" />
     <ClCompile Include="..\shims_and_types.cpp" />
+    <ClCompile Include="..\tinymt32.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\allocators.h" />
     <ClInclude Include="..\annotated_result.h" />
-    <ClInclude Include="..\glh_regex.h" />
     <ClInclude Include="..\iotools.h" />
-    <ClInclude Include="..\masp.h" />
-    <ClInclude Include="..\masp_classwrap.h" />
-    <ClInclude Include="..\masp_extensions.h" />
+    <ClInclude Include="..\orb.h" />
+    <ClInclude Include="..\orb_classwrap.h" />
+    <ClInclude Include="..\orb_extensions.h" />
     <ClInclude Include="..\math_tools.h" />
     <ClInclude Include="..\orb_lib.h" />
     <ClInclude Include="..\persistent_containers.h" />

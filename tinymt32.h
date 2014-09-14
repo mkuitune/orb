@@ -16,6 +16,7 @@
  * LICENSE.txt
  */
 
+#include "orb_lib.h"
 #include <stdint.h>
 //#include <inttypes.h>
 
@@ -38,7 +39,7 @@ struct TINYMT32_T {
 
 typedef struct TINYMT32_T tinymt32_t;
 
-void tinymt32_init(tinymt32_t * random, uint32_t seed);
+ORB_LIB void tinymt32_init(tinymt32_t * random, uint32_t seed);
 void tinymt32_init_by_array(tinymt32_t * random, uint32_t init_key[],
 			    int key_length);
 

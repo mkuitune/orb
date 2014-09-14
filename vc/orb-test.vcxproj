@@ -68,7 +68,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\masp_tests.cpp" />
+    <ClCompile Include="..\orb_tests.cpp" />
     <ClCompile Include="..\pcontainers_tests.cpp" />
     <ClCompile Include="..\unittester.cpp" />
   </ItemGroup>

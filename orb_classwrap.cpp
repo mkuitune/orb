@@ -1,13 +1,13 @@
-﻿/** \file masp_classwrap.cpp. Wrapper for classes.
+﻿/** \file orb_classwrap.cpp. Wrapper for classes.
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
 */
 #pragma once
 
-#include "masp_classwrap.h"
+#include "orb_classwrap.h"
 
 namespace orb{
 
-Value object_data_to_list(FunMap&fmap, Value& obj, Masp& m)
+Value object_data_to_list(FunMap&fmap, Value& obj, Orb& m)
 {
     orb::Value listv = orb::make_value_list(m);
     orb::List* l = orb::value_list(listv);
@@ -18,5 +18,5 @@ Value object_data_to_list(FunMap&fmap, Value& obj, Masp& m)
     return listv;
 }
 
-}//Namespace masp
+}//Namespace orb
 

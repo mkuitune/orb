@@ -1,7 +1,7 @@
-/** \file masp.cpp
+/** \file orb.cpp
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
 */
-#include "masp_classwrap.h"
+#include "orb_classwrap.h"
 #include "persistent_containers.h"
 #include "iotools.h"
 
@@ -337,7 +337,7 @@ void append_to_value_stl_list(std::list<Value>& ext_value_list, const Value& v)
     ext_value_list.push_back(v);
 }
 
-///// Masp::Env //////
+///// Orb::Env //////
 
 
 // Custom Garbage collection to remove dangling references.
@@ -405,7 +405,7 @@ void collect_map_and_list_pools_with_roots(MapPool& map_pool, ListPool& list_poo
 }
 
 }
-class Masp::Env
+class Orb::Env
 {
 public:
     Env()
@@ -453,24 +453,24 @@ public:
 };
 
 
-inline List new_list(Masp& m){return m.env()->list_pool_.new_list();}
+inline List new_list(Orb& m){return m.env()->list_pool_.new_list();}
 
 template<class Cont>
-inline List new_list(Masp& m, const Cont& container){return m.env()->list_pool_.new_list(container);}
+inline List new_list(Orb& m, const Cont& container){return m.env()->list_pool_.new_list(container);}
 
-inline List* new_list_alloc(Masp& m)
+inline List* new_list_alloc(Orb& m)
 {
     return new List(m.env()->list_pool_.new_list());
 }
 
-inline Map* new_map_alloc(Masp& m)
+inline Map* new_map_alloc(Orb& m)
 {
     return new Map(m.env()->map_pool_.new_map());
 }
 
-inline MapPool& map_pool(Masp& m){return m.env()->map_pool_;}
+inline MapPool& map_pool(Orb& m){return m.env()->map_pool_;}
 
-inline Map new_map(Masp& m)
+inline Map new_map(Orb& m)
 {
     return m.env()->map_pool_.new_map();
 }
@@ -542,7 +542,7 @@ Value make_value_symbol(const char* str, const char* str_end)
     return a;
 }
 
-Value make_value_list(Masp& m)
+Value make_value_list(Orb& m)
 {
     Value a;
     a.type = LIST;
@@ -561,7 +561,7 @@ Value make_value_list(const List& oldlist)
 }
 
 
-Value* make_value_list_alloc(Masp& m)
+Value* make_value_list_alloc(Orb& m)
 {
     Value* a = new Value();
     a->type = LIST;
@@ -570,7 +570,7 @@ Value* make_value_list_alloc(Masp& m)
     return a;
 }
 
-Value make_value_map(Masp& m)
+Value make_value_map(Orb& m)
 {
     Value a;
     a.type = MAP;
@@ -941,9 +941,9 @@ class ValueParser
 {
 public:
 
-    Masp& masp_;
+    Orb& orb_;
 
-    ValueParser(Masp& masp):masp_(masp)
+    ValueParser(Orb& orb):orb_(orb)
     {
         reading_string = false;
     }
@@ -1070,14 +1070,14 @@ public:
         }
         else if(is('(')) // Enter list
         {
-            Value result = make_value_list(masp_);
+            Value result = make_value_list(orb_);
             move_forward();
             recursive_parse(result);
             return result;
         }
         else if(is('[')) // Enter vector
         {
-            Value result = make_value_list(masp_);
+            Value result = make_value_list(orb_);
             move_forward();
             recursive_parse(result);
             *result.value.list = result.value.list->add(make_value_symbol("make-vector"));
@@ -1085,7 +1085,7 @@ public:
         }
         else if(is('{')) // Enter map
         {
-            Value result = make_value_list(masp_);
+            Value result = make_value_list(orb_);
             move_forward();
             recursive_parse(result);
             *result.value.list = result.value.list->add(make_value_symbol("make-map"));
@@ -1106,7 +1106,7 @@ public:
         }
         else
         {
-            throw EvaluationException("get_value: Masp parse error.");
+            throw EvaluationException("get_value: Orb parse error.");
             return Value();
         }
     }
@@ -1131,11 +1131,11 @@ public:
             lambda_list.insert(lambda_list.end(), ilambda_params, iend);
 
             // Alloc storage for value containing lambda expression
-            rewritten_list.push_back(make_value_list(masp_));
+            rewritten_list.push_back(make_value_list(orb_));
             List* lambda_list_ptr = value_list(rewritten_list.back());
-            *lambda_list_ptr = new_list(masp_, lambda_list);
+            *lambda_list_ptr = new_list(orb_, lambda_list);
 
-            *list_ptr = new_list(masp_, rewritten_list);
+            *list_ptr = new_list(orb_, rewritten_list);
     }
 
     void rewrite_member_call(std::list<Value>& build_list, List* list_ptr)
@@ -1158,15 +1158,15 @@ public:
         // Populate outer list.
         std::list<Value> rewritten_list;
 
-        rewritten_list.push_back(make_value_list(masp_));
+        rewritten_list.push_back(make_value_list(orb_));
         List* outermaplist = value_list(*rewritten_list.rbegin());
-        rewritten_list.push_back(make_value_list(masp_));
+        rewritten_list.push_back(make_value_list(orb_));
         List* symcalllist = value_list(*rewritten_list.rbegin());
         rewritten_list.insert(rewritten_list.end(), params, iend);
 
         // Populate first inner list
         *outermaplist = outermaplist->add(*funname);
-        Value innermaplist = make_value_list(masp_);
+        Value innermaplist = make_value_list(orb_);
         List* innermap = value_list(innermaplist);
         *innermap = innermap->add(*obj);
         *innermap = innermap->add(make_value_symbol("fnext"));
@@ -1176,7 +1176,7 @@ public:
         *symcalllist =  symcalllist->add(*obj);
         *symcalllist =  symcalllist->add(make_value_symbol("first"));
 
-        *list_ptr = new_list(masp_, rewritten_list);
+        *list_ptr = new_list(orb_, rewritten_list);
     }
 
     void recursive_parse(Value& root)
@@ -1219,7 +1219,7 @@ public:
                 if(next_is_quoted)
                 {
                     Value quote_sym = make_value_symbol("quote");
-                    Value outer = make_value_list(masp_);
+                    Value outer = make_value_list(orb_);
                     *(outer.value.list) = outer.value.list->add(v);
                     *(outer.value.list) = outer.value.list->add(quote_sym);
                     append_to_value_stl_list(build_list, outer);
@@ -1254,11 +1254,11 @@ public:
         }
         else
         {
-            *list_ptr = new_list(masp_, build_list);
+            *list_ptr = new_list(orb_, build_list);
         }
     }
 
-    masp_result parse(const char* str)
+    orb_result parse(const char* str)
     {
         size_t size = strlen(str);
         init(str, str + size);
@@ -1267,56 +1267,56 @@ public:
 
         if(!scope_result.success())
         {
-            return masp_fail(scope_result.report());
+            return orb_fail(scope_result.report());
         }
 
-        Value* root = make_value_list_alloc(masp_);
+        Value* root = make_value_list_alloc(orb_);
 
         try{
             recursive_parse(*root);
         }
         catch(EvaluationException& e){
-            return masp_fail(e.get_message());
+            return orb_fail(e.get_message());
         }
 
         List* root_list = value_list(*root);
         *root_list = root_list->add(make_value_symbol("begin"));
 
-        return masp_result(ValuePtr(root, ValueDeleter()));
+        return orb_result(ValuePtr(root, ValueDeleter()));
     }
 
 };
 
-////// Masp ///////
+////// Orb ///////
 
-Masp::Masp()
+Orb::Orb()
 {
     env_ = new Env();
 }
 
-Masp::~Masp()
+Orb::~Orb()
 {
     delete env_;
 }
 
-Masp::Env* Masp::env(){return env_;}
+Orb::Env* Orb::env(){return env_;}
 
-Map& Masp::env_map(){
+Map& Orb::env_map(){
     return env_->get_env();
 }
 
-void Masp::gc(){env_->gc();}
+void Orb::gc(){env_->gc();}
 
-size_t Masp::reserved_size_bytes(){return env_->reserved_size_bytes();}
+size_t Orb::reserved_size_bytes(){return env_->reserved_size_bytes();}
 
-size_t Masp::live_size_bytes(){return env_->live_size_bytes();}
+size_t Orb::live_size_bytes(){return env_->live_size_bytes();}
 
-void Masp::set_output(std::ostream* os)
+void Orb::set_output(std::ostream* os)
 {
     if(env_) env_->out_ = os;
 }
 
-void Masp::set_args(int argc, char* argv[])
+void Orb::set_args(int argc, char* argv[])
 {
     Value argmap = make_value_map(*this);
     Map* map     = value_map(argmap);
@@ -1351,7 +1351,7 @@ void Masp::set_args(int argc, char* argv[])
 }
 
 /** Get handle to output stream.*/
-std::ostream& Masp::get_output()
+std::ostream& Orb::get_output()
 {
     if(env_) return *(env_->out_);
     else return std::cout;
@@ -1359,15 +1359,15 @@ std::ostream& Masp::get_output()
 
 ///// Evaluation utilities /////
 
-masp_result masp_fail(const char* str){
-    return masp_result(std::string(str));
+orb_result orb_fail(const char* str){
+    return orb_result(std::string(str));
 }
 
-masp_result masp_fail(const std::string& str){
-    return masp_result(str);
+orb_result orb_fail(const std::string& str){
+    return orb_result(str);
 }
 
-masp_result string_to_value(Masp& m, const char* str)
+orb_result string_to_value(Orb& m, const char* str)
 {
     ValueParser parser(m);
 
@@ -1531,8 +1531,8 @@ std::string value_type_to_string(const Value& v)
 
 namespace {
 
-Value eval(const Value& v, Map& env, Masp& masp);
-Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map& env, Masp& masp);
+Value eval(const Value& v, Map& env, Orb& orb);
+Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map& env, Orb& orb);
 
 bool is_self_evaluating(const Value& v)
 {
@@ -1581,19 +1581,19 @@ bool is_true(const Value& v)
 const Value* assignment_var(const Value& v){return value_list_second(v);}
 const Value* assignment_value(const Value& v){return value_list_third(v);}
 
-Value eval_sequence(const List& expressions, Map& env, Masp& masp)
+Value eval_sequence(const List& expressions, Map& env, Orb& orb)
 {
     if(expressions.empty())
         throw EvaluationException(std::string("eval_sequence: Trying to evaluate empty sequence"));
 
     if(!expressions.has_rest()) 
     {
-        return eval(*expressions.first(), env, masp);
+        return eval(*expressions.first(), env, orb);
     }
     else
     {
-        eval(*expressions.first(), env, masp);
-        return eval_sequence(expressions.rest(), env, masp);
+        eval(*expressions.first(), env, orb);
+        return eval_sequence(expressions.rest(), env, orb);
     }
 }
 
@@ -1608,7 +1608,7 @@ Value sequence_exp(const List& action)
 }
 
 // cond: expand-clauses
-Value expand_clauses(const List& clauses, Masp& masp)
+Value expand_clauses(const List& clauses, Orb& orb)
 {
     if(clauses.empty()) return Value();
     else
@@ -1642,7 +1642,7 @@ Value expand_clauses(const List& clauses, Masp& masp)
 
             // make-if
 
-            Value v_iflist = make_value_list(masp);
+            Value v_iflist = make_value_list(orb);
             List* iflist = value_list(v_iflist);
 
             // first : (pred ca)
@@ -1651,7 +1651,7 @@ Value expand_clauses(const List& clauses, Masp& masp)
             const List     ca = value_list(*first)->rest(); // cond-actions : (pred ca) -> ca
             Value         seq = sequence_exp(ca); // (foo bar) -> (begin foo bar) OR (foo) -> foo
 
-            Value     clauses = expand_clauses(rest, masp); // (if foo bar (if ...))
+            Value     clauses = expand_clauses(rest, orb); // (if foo bar (if ...))
 
             *iflist = iflist->add(clauses);
             *iflist = iflist->add(seq);
@@ -1665,12 +1665,12 @@ Value expand_clauses(const List& clauses, Masp& masp)
 }
 
 // cond: cond->if
-Value convert_cond_to_if(const Value& v, Masp& masp)
+Value convert_cond_to_if(const Value& v, Orb& orb)
 {
-    return expand_clauses(value_list(v)->rest(), masp); 
+    return expand_clauses(value_list(v)->rest(), orb); 
 }
 
-Value eval(const Value& v, Map& env, Masp& masp)
+Value eval(const Value& v, Map& env, Orb& orb)
 {
     if(is_self_evaluating(v)) return v;
     else if(v.type == SYMBOL)
@@ -1698,7 +1698,7 @@ Value eval(const Value& v, Map& env, Masp& masp)
             if(is_self_evaluating(*asgn_val))
                 env = env.add(*asgn_var, *asgn_val);
             else
-                env = env.add(*asgn_var, eval(*asgn_val, env, masp));
+                env = env.add(*asgn_var, eval(*asgn_val, env, orb));
         }
         else
         {
@@ -1719,7 +1719,7 @@ Value eval(const Value& v, Map& env, Masp& masp)
             if(is_self_evaluating(*asgn_val))
                 result = env.try_replace_value(*asgn_var, *asgn_val);
             else
-                result = env.try_replace_value(*asgn_var, eval(*asgn_val, env, masp));
+                result = env.try_replace_value(*asgn_var, eval(*asgn_val, env, orb));
         }
         else
         {
@@ -1735,13 +1735,13 @@ Value eval(const Value& v, Map& env, Masp& masp)
         const Value* if_predicate = value_list_second(v);
         if(if_predicate)
         {
-            if(is_true(eval(*if_predicate, env, masp)))
+            if(is_true(eval(*if_predicate, env, orb)))
             {
                 const Value* if_then = value_list_third(v);
                 if(if_then)
                 {
                     if(is_self_evaluating(*if_then)) return *if_then;
-                    else return eval(*if_then, env, masp);
+                    else return eval(*if_then, env, orb);
                 }
                 else throw EvaluationException(std::string("eval: Did not find 'fst' in expected form (if pred fst snd). Input:") + value_to_string(v));
             }
@@ -1753,7 +1753,7 @@ Value eval(const Value& v, Map& env, Masp& masp)
                     if(is_self_evaluating(*if_else))
                         return *if_else;
                     else
-                        return eval(*if_else, env, masp);
+                        return eval(*if_else, env, orb);
                 }
                 else
                 {
@@ -1774,7 +1774,7 @@ Value eval(const Value& v, Map& env, Masp& masp)
                     *lambda_parameters,
                     make_value_list(l->rrest()), // lambda body
                     make_value_map(env));
-            return make_value_list(new_list(masp, lambda_list));
+            return make_value_list(new_list(orb, lambda_list));
         }
         else
         {
@@ -1783,11 +1783,11 @@ Value eval(const Value& v, Map& env, Masp& masp)
     }
     else if(is_begin(v))
     {
-        return eval_sequence(value_list(v)->rest(), env, masp);
+        return eval_sequence(value_list(v)->rest(), env, orb);
     }
     else if(is_cond(v))
     {
-        return eval(convert_cond_to_if(v, masp), env, masp);
+        return eval(convert_cond_to_if(v, orb), env, orb);
     }
     else if(is_application(v) && (!value_list(v)->empty())) // Is application
     {
@@ -1796,13 +1796,13 @@ Value eval(const Value& v, Map& env, Masp& masp)
         Value op;
 
         if(!is_self_evaluating(*first)) 
-            op = eval(*first, env, masp);
+            op = eval(*first, env, orb);
         else
             op = *first;
 
         List operands = value_list(v)->rest(); // TODO: eval each operand prior to application. Store result in temp. container or list.
 
-        return apply(op, operands.begin(), operands.end(), env, masp);
+        return apply(op, operands.begin(), operands.end(), env, orb);
     }
 
     throw EvaluationException(std::string("Could not find evaluable value. Input:") + value_to_string(v));
@@ -1818,12 +1818,12 @@ PrimitiveFunction value_function(const Value& v)
     return v.value.function->fun;
 }
 
-Vector eval_list_to_vector(VRefIterator args_begin, VRefIterator args_end, Map& env, Masp& masp)
+Vector eval_list_to_vector(VRefIterator args_begin, VRefIterator args_end, Map& env, Orb& orb)
 {
     Vector v;
     while(args_begin != args_end)
     {
-        v.push_back(eval(*args_begin, env, masp));
+        v.push_back(eval(*args_begin, env, orb));
         ++args_begin;
     }
     return v;
@@ -1866,7 +1866,7 @@ void list_decompose(const List& l, const Value** first, const Value** second, co
 
 }
 
-Value eval_compound_procedure(const Value& v, Vector& params, Masp& masp)
+Value eval_compound_procedure(const Value& v, Vector& params, Orb& orb)
 {
         // Eval sequence. #1 : Extract params, body and env from procedure list.
         const Value* proc_params = 0;
@@ -1900,20 +1900,20 @@ Value eval_compound_procedure(const Value& v, Vector& params, Masp& masp)
 
         Map seq_env = proc_env_map->add(params_list->begin(), params_list->end(), params.begin(), params.end());
 
-        return eval_sequence(*value_list(*proc_body), seq_env, masp);
+        return eval_sequence(*value_list(*proc_body), seq_env, orb);
 }
 
-Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map& env, Masp& masp)
+Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map& env, Orb& orb)
 {
-    Vector params = eval_list_to_vector(args_begin, args_end, env, masp);
+    Vector params = eval_list_to_vector(args_begin, args_end, env, orb);
 
     if(is_primitive_procedure(v))
     {
-        return value_function(v)(masp, params, env);
+        return value_function(v)(orb, params, env);
     }
     else if(is_compound_procedure(v))
     {
-        return eval_compound_procedure(v, params, masp);
+        return eval_compound_procedure(v, params, orb);
 
 #if 0
         // Eval sequence. #1 : Extract params, body and env from procedure list.
@@ -1948,7 +1948,7 @@ Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map&
 
         Map seq_env = proc_env_map->add(params_list->begin(), params_list->end(), params.begin(), params.end());
 
-        return eval_sequence(*value_list(*proc_body), seq_env, masp);
+        return eval_sequence(*value_list(*proc_body), seq_env, orb);
 #endif
     }
     else if(v.type == MAP)
@@ -1994,7 +1994,7 @@ Value apply(const Value& v, VRefIterator args_begin, VRefIterator args_end, Map&
 
 } // empty namespace
 
-masp_result eval(Masp& m, const Value* v)
+orb_result eval(Orb& m, const Value* v)
 {
     ValuePtr result(new Value(), ValueDeleter());
 
@@ -2003,21 +2003,21 @@ masp_result eval(Masp& m, const Value* v)
         *result = eval(*v, m.env()->get_env(), m);
     }catch(const EvaluationException& e)
     {
-        return masp_fail(e.get_message());
+        return orb_fail(e.get_message());
     }catch(const std::exception& e)
     {
-        return masp_fail(e.what());
+        return orb_fail(e.what());
     }
     catch(...)
     {
-        return masp_fail("Unknown error.");
+        return orb_fail("Unknown error.");
     }
 
-    return masp_result(result);
+    return orb_result(result);
 }
 
-masp_result read_eval(Masp& m, const char* str){
-    masp_result parse_result = string_to_value(m, str);
+orb_result read_eval(Orb& m, const char* str){
+    orb_result parse_result = string_to_value(m, str);
     if(parse_result.valid()){
         return eval(m, parse_result.as_value()->get());
     }
@@ -2026,7 +2026,7 @@ masp_result read_eval(Masp& m, const char* str){
     }
 }
 
-const Value* get_value(Masp& m, const char* pathstr)
+const Value* get_value(Orb& m, const char* pathstr)
 {
     const Value* result = 0;
 
@@ -2105,7 +2105,7 @@ Number get_value_number(const Value* v)
 
 namespace {
 
-#define OPDEF(name_param, i_start_param, i_end_param) Value name_param(Masp& m, Vector& args, Map& env){\
+#define OPDEF(name_param, i_start_param, i_end_param) Value name_param(Orb& m, Vector& args, Map& env){\
             VecIterator i_start_param = args.begin(); VecIterator i_end_param = args.end();
 
     // Arithmetic operators
@@ -2262,7 +2262,7 @@ namespace {
         return make_value_boolean(Result);
     }
 
-    Value op_not_equal(Masp& m, Vector& args, Map& env){
+    Value op_not_equal(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         bool Result = true;
@@ -2316,28 +2316,28 @@ namespace {
         return Result;
     }
 
-    Value op_less_or_eq(Masp& m, Vector& args, Map& env){
+    Value op_less_or_eq(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         bool Result = num_op_loop<NumLeq>(arg_start, arg_end);
         return make_value_boolean(Result);
     }
 
-    Value op_less(Masp& m, Vector& args, Map& env){
+    Value op_less(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         bool Result = num_op_loop<NumLess>(arg_start, arg_end);
         return make_value_boolean(Result);
     }
 
-    Value op_gt(Masp& m, Vector& args, Map& env){
+    Value op_gt(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         bool Result = num_op_loop<NumGt>(arg_start, arg_end);
         return make_value_boolean(Result);
     }
 
-    Value op_gt_or_eq(Masp& m, Vector& args, Map& env){
+    Value op_gt_or_eq(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         bool Result = num_op_loop<NumGeq>(arg_start, arg_end);
@@ -2385,7 +2385,7 @@ namespace {
         return first;
     }
 
-    Value op_first(Masp& m, Vector& args, Map& env){
+    Value op_first(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         const Value* first = 0;
@@ -2397,7 +2397,7 @@ namespace {
         return first ? *first : Value();
     }
 
-    Value op_next(Masp& m, Vector& args, Map& env){
+    Value op_next(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         if(arg_start != arg_end)
@@ -2408,7 +2408,7 @@ namespace {
         return Value();
     }
 
-    Value op_fnext(Masp& m, Vector& args, Map& env){
+    Value op_fnext(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         if(arg_start != arg_end)
@@ -2433,7 +2433,7 @@ namespace {
         return Value();
     }
 
-    Value op_nnext(Masp& m, Vector& args, Map& env){
+    Value op_nnext(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         if(arg_start != arg_end)
@@ -2461,7 +2461,7 @@ namespace {
         return Value();
     }
 
-    Value op_nfirst(Masp& m, Vector& args, Map& env){
+    Value op_nfirst(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         const Value* first = 0;
@@ -2485,7 +2485,7 @@ namespace {
         return Value();
     }
 
-    Value op_ffirst(Masp& m, Vector& args, Map& env){
+    Value op_ffirst(Orb& m, Vector& args, Map& env){
         VecIterator arg_start = args.begin();
         VecIterator arg_end = args.end();
         const Value* ffirst = 0;
@@ -2501,7 +2501,7 @@ namespace {
 
     // Type query operations
 
-#define OP_1_DEFN(opval_param, i_param)    Value opval_param(Masp& m, Vector& args, Map& env) \
+#define OP_1_DEFN(opval_param, i_param)    Value opval_param(Orb& m, Vector& args, Map& env) \
     {VecIterator i_param = args.begin(); VecIterator arg_end = args.end(); if(i_param != arg_end){
 
     OP_1_DEFN(op_value_is_integer, vi)
@@ -2759,22 +2759,22 @@ namespace {
             :args(arguments), count(args.size()),symcount(count - 2), collection(args[count - 2]), fun(args[count - 1]){
         }
 
-        Value apply(Vector& params, Map& env, Masp& masp)
+        Value apply(Vector& params, Map& env, Orb& orb)
         {
             if(is_primitive_procedure(fun))
             {
-                return value_function(fun)(masp, params, env);
+                return value_function(fun)(orb, params, env);
             }
             else if(is_compound_procedure(fun))
             {
-                return eval_compound_procedure(fun, params, masp);
+                return eval_compound_procedure(fun, params, orb);
             }
             else throw EvaluationException("IterContext::apply: malformed call, attempting call non-callable value."); 
         }
     };
 
     template<class T>
-    Value extract_apply(T begin, T end, IterContext& ic, Map& env, Masp& masp)
+    Value extract_apply(T begin, T end, IterContext& ic, Map& env, Orb& orb)
     {
         Vector args;
         bool done = begin == end;
@@ -2791,7 +2791,7 @@ namespace {
                 ++load;
             }
             while(load < ic.symcount) args.push_back(Value());
-            ic.apply(args, env, masp);
+            ic.apply(args, env, orb);
 
             if(begin == end) done = true;
         }
@@ -2800,7 +2800,7 @@ namespace {
     }
 
     // TODO: raise exception or unify: iter for map takes only 2 parameters. Make explicit.
-    Value extract_apply_map(Map::iterator begin, Map::iterator end, IterContext& ic, Map& env, Masp& masp)
+    Value extract_apply_map(Map::iterator begin, Map::iterator end, IterContext& ic, Map& env, Orb& orb)
     {
         if(ic.symcount != 0) throw EvaluationException("op_iter: map does not accept decomposition symbols. call as (map mapref fun)."); 
 
@@ -2811,26 +2811,26 @@ namespace {
             args.clear();
             args.push_back(begin->first);
             args.push_back(begin->second);
-            ic.apply(args, env, masp);
+            ic.apply(args, env, orb);
             ++begin;
         }
 
         return Value();
     }
 
-    Value do_iter_list(Masp& m, Vector& args, Map& env){
+    Value do_iter_list(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         List* list = value_list(ic.collection);
         return extract_apply(list->begin(), list->end(), ic, env, m);
     }
     
-    Value do_iter_vector(Masp& m, Vector& args, Map& env){
+    Value do_iter_vector(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         Vector* vector = value_vector(ic.collection);
         return extract_apply(vector->begin(), vector->end(), ic, env, m);
     }
     
-    Value do_iter_map(Masp& m, Vector& args, Map& env){
+    Value do_iter_map(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         Map* map = value_map(ic.collection);
        return extract_apply_map(map->begin(), map->end(), ic, env, m);
@@ -2869,7 +2869,7 @@ namespace {
     }
 
     template<class COL, class T>
-    Value extract_apply_collect(T begin, T end, IterContext& ic, Map& env, Masp& m)
+    Value extract_apply_collect(T begin, T end, IterContext& ic, Map& env, Orb& m)
     {
         Vector args;
         bool done = begin == end;
@@ -2911,7 +2911,7 @@ namespace {
     }
 
     // Raise exception or unify: iter for map takes only  2 parameters. Make explicit.
-    Value extract_apply_map_collect(Map::iterator begin, Map::iterator end, IterContext& ic, Map& env, Masp& m)
+    Value extract_apply_map_collect(Map::iterator begin, Map::iterator end, IterContext& ic, Map& env, Orb& m)
     {
         if(ic.symcount != 0) throw EvaluationException("op_iter: iter for map does not accept decomposition symbols. call as (iter mapref fun) "); 
 
@@ -2965,19 +2965,19 @@ namespace {
         return result;
     }
 
-    Value do_map_list(Masp& m, Vector& args, Map& env){
+    Value do_map_list(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         List* list = value_list(ic.collection);
         return extract_apply_collect<List, List::iterator>(list->begin(), list->end(), ic, env, m);
     }
     
-    Value do_map_vector(Masp& m, Vector& args, Map& env){
+    Value do_map_vector(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         Vector* vector = value_vector(ic.collection);
         return extract_apply_collect<Vector, Vector::iterator>(vector->begin(), vector->end(), ic, env, m);
     }
     
-    Value do_map_map(Masp& m, Vector& args, Map& env){
+    Value do_map_map(Orb& m, Vector& args, Map& env){
         IterContext ic(args);
         Map* map = value_map(ic.collection);
        return extract_apply_map_collect(map->begin(), map->end(), ic, env, m);
@@ -3031,7 +3031,7 @@ namespace {
             std::tie(contents, success) = file_to_string(path);
 
             if(success){
-                masp_result res = read_eval(m, contents.c_str());
+                orb_result res = read_eval(m, contents.c_str());
 
                 if(res.valid()){ 
                     return *(res.as_value()->get());
@@ -3059,17 +3059,17 @@ namespace {
 
 //////////// Load environment ////////////
 
-void Masp::Env::add_fun(const char* name, PrimitiveFunction f)
+void Orb::Env::add_fun(const char* name, PrimitiveFunction f)
 {
     *env_ = env_->add(make_value_symbol(name), make_value_function(f));
 }
 
-void Masp::Env::def(const Value& key, const Value& value)
+void Orb::Env::def(const Value& key, const Value& value)
 {
     *env_ = env_->add(key, value);
 }
 
-void Masp::Env::load_default_env()
+void Orb::Env::load_default_env()
 {
     add_fun("+", op_add);
     add_fun("-", op_sub);
@@ -3128,6 +3128,6 @@ void Masp::Env::load_default_env()
     add_fun("import", op_import_file);
 }
 
-void add_fun(Masp& m, const char* name, PrimitiveFunction f) {m.env()->add_fun(name, f);}
+void add_fun(Orb& m, const char* name, PrimitiveFunction f) {m.env()->add_fun(name, f);}
 
-} // Namespace masp ends
+} // Namespace orb ends

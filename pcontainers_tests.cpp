@@ -327,12 +327,13 @@ UTEST(collections_pmap, PMap_write_and_find_elements)
 
 }
 
-#if 1
+#if 0
 UTEST(collections_pmap, PMap_combinations)
 {
     using namespace orb;
     std::list<int> sizes;
-    add(sizes, 1)(2)(3)(4)(5)(6)(7)(11)(13)(17)(19)(23)(29)(31)(32)(33)(67)(135)(271)(543);
+    add(sizes, 1)(2)(3)(4)(5)(6)(7)(11)(13);
+    //add(sizes, 1)(2)(3)(4)(5)(6)(7)(11)(13)(17)(19)(23)(29)(31)(32)(33)(67)(135)(271)(543);
     //add(sizes, 1)(2)(3)(4)(5)(6)(7)(11)(13)(17)(19)(23)(29)(31)(32)(33)(67)(135);
     // TODO: Make gc faster. The current n^2 is really, really bad.
     auto size_pairs = all_pairs(sizes);

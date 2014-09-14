@@ -1,4 +1,4 @@
-/** \file masp.h
+/** \file orb.h
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
 */
 #pragma once
@@ -21,7 +21,7 @@ namespace orb{
 
 enum Type{NIL, BOOLEAN, NUMBER, NUMBER_ARRAY, STRING, SYMBOL, VECTOR, LIST, MAP, OBJECT, FUNCTION};
 
-struct Number{
+struct ORB_LIB Number{
     enum Type{INT, FLOAT};
     union
     {
@@ -113,11 +113,13 @@ class Value;
 
 // define hash function for value
 
-class ValuesAreEqual { public:
+class ORB_LIB ValuesAreEqual {
+public:
     static bool compare(const Value& k1, const Value& k2);
 };
 
-class ValueHash { public:
+class ORB_LIB ValueHash{
+public:
     static uint32_t hash(const Value& h);
 };
 
@@ -140,8 +142,8 @@ public:
 
 struct Function;
 
-/** Masp value. */
-class Value
+/** Orb value. */
+class ORB_LIB Value
 {
 public:
     Type type;
@@ -184,16 +186,16 @@ private:
 
 };
 
-class Masp;
+class Orb;
 
 typedef Value::Vector Vector;
 typedef Vector::iterator VecIterator;
-typedef std::function<Value(Masp& m, Vector& args, Map& env)> PrimitiveFunction;
+typedef std::function<Value(Orb& m, Vector& args, Map& env)> PrimitiveFunction;
 
 
-void free_value(Value* v);
+ORB_LIB void free_value(Value* v);
 
-class ValueDeleter{
+class ORB_LIB ValueDeleter{
 public:
     void operator()(Value* v){free_value(v);}
 };
@@ -201,15 +203,15 @@ public:
 typedef std::shared_ptr<Value> ValuePtr;
 
 /** Script environment. */
-class ORB_LIB Masp
+class ORB_LIB Orb
 {
 public:
 
-#define MASP_VERSION 0.01
+#define ORB_VERSION 0.01
 
 
-    Masp();
-    ~Masp();
+    Orb();
+    ~Orb();
 
     // TODO: replace std::List with plist
     // TODO: Eval : place value of atom to applied list
@@ -247,36 +249,36 @@ private:
 };
 
 
-typedef orb::AnnotatedResult<ValuePtr> masp_result;
+typedef orb::AnnotatedResult<ValuePtr> orb_result;
 
-masp_result masp_fail(const char* str);
-masp_result masp_fail(const std::string& str);
+ORB_LIB orb_result orb_fail(const char* str);
+ORB_LIB orb_result orb_fail(const std::string& str);
 
 /** Parse string to value data structure.*/
-ORB_LIB masp_result string_to_value(Masp& m, const char* str);
+ORB_LIB orb_result string_to_value(Orb& m, const char* str);
 
-/** Evaluate the datastructure held within the atom in the context of the Masp env. Return result as atom.*/
-ORB_LIB masp_result eval(Masp& m, const Value* v);
+/** Evaluate the datastructure held within the atom in the context of the Orb env. Return result as atom.*/
+ORB_LIB orb_result eval(Orb& m, const Value* v);
 
 /** Parse string and evaluate result */
-masp_result read_eval(Masp& m, const char* str);
+ORB_LIB orb_result read_eval(Orb& m, const char* str);
 
 /** Parse and evaluate contents of file and return the result as a value data structure. */
-// TODO: masp_result readfile(Masp& m, const char* file_path);
+// TODO: orb_result readfile(Orb& m, const char* file_path);
 
 /** Return string representation of value. */
 ORB_LIB std::string value_to_string(const Value& v);
 
-std::ostream& operator<<(std::ostream& os, const Value& v);
+ORB_LIB std::ostream& operator<<(std::ostream& os, const Value& v);
 
 /** Return string representation of value annotated with type. */
 ORB_LIB std::string value_to_typed_string(const Value* v);
 
 /** Return type of value as string.*/
-const char* value_type_to_string(const Value* v);
+ORB_LIB const char* value_type_to_string(const Value* v);
 
 
-void add_fun(Masp& m, const char* name, PrimitiveFunction f);
+ORB_LIB void add_fun(Orb& m, const char* name, PrimitiveFunction f);
 
 /// State accessors
 
@@ -284,60 +286,60 @@ void add_fun(Masp& m, const char* name, PrimitiveFunction f);
 *   URI paths, ie foo/bar will attempt to access the value in key 'bar' in map 'foo'. And "cat/hat/rat" will
 *   attempt to access the value by the key 'rat' held in the map stored in the map cat by the key 'hat' etc.
 *   If the value is not found, a null pointer is returned.*/
-const Value* get_value(Masp& m, const char* path);
+ORB_LIB const Value* get_value(Orb& m, const char* path);
 
 /** Get type of value. @param v Value to query @return Type of v. If v is null returns NIL. */
-Type         value_type(const Value* v);
+ORB_LIB Type         value_type(const Value* v);
 
 
 // object_factory = return list (value:IObject, value:map{name, objfun, name, objfun})
-// objfun : void foo(Masp& m, VecIterator arg_start, VecIterator arg_end, Map& env)
+// objfun : void foo(Orb& m, VecIterator arg_start, VecIterator arg_end, Map& env)
 // {obj = value_object(&*arg_start); if(obj){inst = dynamic_cast<inst_type>(obj)}}
 // TOOD: add shorthand (. fun obj params) :=  (((fnext obj) fun) (first obj) params) = 
 //                           
 
-Vector*      value_vector(Value& v);
-NumberArray* value_number_array(Value& v);
-Map*         value_map(const Value& v);
-IObject*     value_object(const Value& v);
-Number       value_number(const Value& v);
-List*        value_list(const Value& v);
-const char*  value_string(const Value& v);
-bool         value_boolean(const Value& v);
+ORB_LIB Vector*      value_vector(Value& v);
+ORB_LIB NumberArray* value_number_array(Value& v);
+ORB_LIB Map*         value_map(const Value& v);
+ORB_LIB IObject*     value_object(const Value& v);
+ORB_LIB Number       value_number(const Value& v);
+ORB_LIB List*        value_list(const Value& v);
+ORB_LIB const char*  value_string(const Value& v);
+ORB_LIB bool         value_boolean(const Value& v);
 
-const Value* value_list_first(const Value& v);
-const Value* value_list_nth(const Value& v, size_t n);
+ORB_LIB const Value* value_list_first(const Value& v);
+ORB_LIB const Value* value_list_nth(const Value& v, size_t n);
 
 // Value factories
-Value make_value_number(const Number& num);
-Value make_value_number(int i);
-Value make_value_number(double d);
+ORB_LIB Value make_value_number(const Number& num);
+ORB_LIB Value make_value_number(int i);
+ORB_LIB Value make_value_number(double d);
 
-Value make_value_string(const char* str);
-Value make_value_string(const std::string& str);
-Value make_value_string(const char* str, const char* str_end);
+ORB_LIB Value make_value_string(const char* str);
+ORB_LIB Value make_value_string(const std::string& str);
+ORB_LIB Value make_value_string(const char* str, const char* str_end);
 
-Value make_value_symbol(const char* str);
-Value make_value_symbol(const char* str, const char* str_end);
-Value make_value_list(Masp& m);
-Value make_value_list(const List& oldlist);
+ORB_LIB Value make_value_symbol(const char* str);
+ORB_LIB Value make_value_symbol(const char* str, const char* str_end);
+ORB_LIB Value make_value_list(Orb& m);
+ORB_LIB Value make_value_list(const List& oldlist);
 
-Value make_value_map(Masp& m);
-Value make_value_map(const Map& oldmap);
+ORB_LIB Value make_value_map(Orb& m);
+ORB_LIB Value make_value_map(const Map& oldmap);
 
-Value make_value_function(PrimitiveFunction f);
+ORB_LIB Value make_value_function(PrimitiveFunction f);
 
-Value make_value_object(IObject* alloced_object);
+ORB_LIB Value make_value_object(IObject* alloced_object);
 
-Value make_value_vector();
-Value make_value_vector(Vector& old, Value& v);
-Value make_value_vector(Value& v, Vector& old);
+ORB_LIB Value make_value_vector();
+ORB_LIB Value make_value_vector(Vector& old, Value& v);
+ORB_LIB Value make_value_vector(Value& v, Vector& old);
 
-Value make_value_number_array();
-Value make_value_boolean(bool b);
+ORB_LIB Value make_value_number_array();
+ORB_LIB Value make_value_boolean(bool b);
 
 /** Evaluation errors will throw a EvaluationException. */ 
-class EvaluationException 
+class ORB_LIB EvaluationException
 {
 public:
 
