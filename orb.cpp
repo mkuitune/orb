@@ -2644,7 +2644,7 @@ namespace {
             }
             else if(fst->type == VECTOR)
             {
-                Vector* v = value_vector(*snd);
+                Vector* v = value_vector(*fst);
                 ++arg_i; 
                 return make_value_vector(*v, arg_i, arg_end);
             }
