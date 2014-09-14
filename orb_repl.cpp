@@ -16,10 +16,13 @@ void print_help()
 
 //TODO: gc
 
+bool s_echo_types = false;
+
 void printing_response(orb::Orb& M, orb::Value* v)
 {
-    std::string outline = orb::value_to_typed_string(v);
-    std::cout << outline << std::endl;
+
+    std::string outline = s_echo_types ? orb::value_to_typed_string(v) : orb::value_to_string(*v);
+    std::cout << outline << std::endl ;
 }
 
 void eval_response(orb::Orb& M, orb::Value* v)
@@ -75,6 +78,14 @@ void repl(orb::Orb& M)
         if(strcmp(line,"quit") == 0)
         {
             live = false;
+        }
+        else if(strcmp(line, "echo-types-off") == 0)
+        {
+            s_echo_types = false;
+        }
+        else if(strcmp(line, "echo-types-on") == 0)
+        {
+            s_echo_types = true;
         }
         else if(strcmp(line, "help") == 0)
         {
