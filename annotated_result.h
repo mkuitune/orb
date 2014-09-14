@@ -1,6 +1,7 @@
 /**
     \file annotated_result.h
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT license.
 */
 #pragma once
 

@@ -1,5 +1,6 @@
 /** \file orb_extensions.cpp
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT licence.
 */
 
 #include "orb_extensions.h"

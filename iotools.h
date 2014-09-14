@@ -4,6 +4,7 @@
 * All the paths should be given using / as the directory separator.
 * 
 * \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+* MIT license.
 */
 #pragma once
 #include "orb_lib.h"

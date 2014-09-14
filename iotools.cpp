@@ -1,5 +1,6 @@
 /** \file iotools.cpp
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT licence.
 */
 #include "iotools.h"
 #include "shims_and_types.h"

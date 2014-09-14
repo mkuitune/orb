@@ -1,11 +1,9 @@
-// See unittester.h for instructions.
-//
-// This code is in the public domain.
-//
-// The software is provided "as is", without warranty of any kind etc.
-//
-// Author: Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
-//
+/** \file unittester.cpp
+    \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+
+    MIT license.
+
+*/
 #include "unittester.h"
 
 TestSet*                  g_tests = 0;

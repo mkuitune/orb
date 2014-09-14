@@ -1,7 +1,7 @@
-/** Unit tests */
-
-
-//#include "glhack.h"
+/** \file orb_tests.cpp
+\author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+MIT licence.
+*/
 #include "persistent_containers.h"
 #include "orb.h"
 #include "orb_classwrap.h"

@@ -1,12 +1,12 @@
 /** \file orb.cpp
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT licence.
 */
 #include "orb_classwrap.h"
 #include "persistent_containers.h"
 #include "iotools.h"
 
 #include <regex>
-
 
 #include<stack>
 #include<cstring>

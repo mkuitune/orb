@@ -1,7 +1,8 @@
-/** Unit tests */
+/** \file pcontainers_tests.cpp
+\author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+MIT licence.
+*/
 
-
-//#include "glhack.h"
 #include "persistent_containers.h"
 #include<string>
 #include "unittester.h"

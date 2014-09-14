@@ -1,4 +1,6 @@
 /** \file persistent_containers.h Persistent containers.
+     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+ * MIT licence.
  *
  * Since C++ does not contain a standard garbage collector and our intent is not to use the persistent
  * data structures universally, each datastructure has it's own allocator and implementation of

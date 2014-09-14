@@ -1,5 +1,6 @@
 /** \file math_tools.h Usefull wrappers and tools for numbers.
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT licence.
 */
 #pragma once
 

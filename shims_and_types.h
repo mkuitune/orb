@@ -1,6 +1,8 @@
 /** \file shims_and_types.h Declarations not linked directly to OpenGL.
 
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+
+    MIT licence.
 */
 #pragma once
 

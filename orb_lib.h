@@ -1,3 +1,8 @@
+/** \file orb_lib.h
+\author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+MIT licence.
+*/
+
 #pragma once
 
 #if defined(ORB_LIB_EXPORT) // inside DLL

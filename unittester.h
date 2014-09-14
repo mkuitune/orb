@@ -1,3 +1,8 @@
+/** \file unittester.h
+\author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+MIT licence.
+*/
+
 // This is a lightweight unittest suite.
 //
 // It contains two files - unittester.h and unittester.cpp. The latter implements the

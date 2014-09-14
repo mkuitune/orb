@@ -1,5 +1,7 @@
 /** \file allocator.cpp Memory allocator 
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+
+    MIT license.
 */
 #include "allocators.h"
 

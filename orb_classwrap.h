@@ -1,5 +1,6 @@
 ﻿/** \file orb_classwrap.h. Wrapper for classes.
     \author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+    MIT licence.
 */
 #pragma once
 

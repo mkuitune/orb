@@ -1,3 +1,8 @@
+/** \file orb_repl.cpp
+\author Mikko Kuitunen (mikko <dot> kuitunen <at> iki <dot> fi)
+MIT licence.
+*/
+
 #include "iotools.h"
 #include "orb.h"
 #include "orb_extensions.h"

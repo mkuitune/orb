@@ -69,6 +69,11 @@ trees in a fairly efficient manner (thus the number of nodes duplicated at each 
 The interpreter follows typical conventions when writing compilers. Sestoft's introduction is fairly good in
 this manner[5].
 
+Included software
+-----------------
+
+Currently uses the Mersenne Twister random number library ( Copyright (C) 2011 Mutsuo Saito, Makoto Matsumoto) licenced under the BSD licence.
+
 References
 ----------
 [1] Gerald Sussman & Hal Abelson, "Structure and Interpretation of Computer Programs"
