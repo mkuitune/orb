@@ -13,6 +13,24 @@ with influences from Clojure. The feature set is not extensive - closures are
 supported but there is no tail call optimization. Only charset supported is
 US-ASCII.
 
+Dependencies and platform compatibility
+---------------------------------------
+
+Orb is written in C++ and needs a C++11 compliant compiler to compile. There are no
+other dependencies. 
+
+Current platform build systems supported:
+-Visual Studio 2013 (Win32)
+
+Implementing cross compilation is a plausible exercise. If you are intrigued you
+can just look up from the visual studio source files which solutions need which files and 
+compile. 
+
+There are three compile units currently present:
+* 'orb' which consists of the language interpreter and compiles to a shared library
+* 'orb-repl' which is simple Read-Eval-Print loop for the orb interpeter linking to the orb library.
+* 'orb-test' which is a unit tester executable that when run will execute a set of unit tests.
+
 Syntax
 ------
 (Todo)
